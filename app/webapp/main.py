@@ -183,92 +183,92 @@ async def get_user_profile(user_id: int):
 @app.post("/api/webapp/data")
 async def process_webapp_data(data: WebAppResponse):
     """Process data from the Web App"""
-    try:
-        if data.action == "update_profile" and data.profile:
-            # Convert time strings to time objects if provided
-            preferred_time_start = None
-            preferred_time_end = None
-            
-            if data.profile.preferred_time_start:
-                hour, minute = map(int, data.profile.preferred_time_start.split(":"))
-                preferred_time_start = datetime.time(hour, minute)
-            
-            if data.profile.preferred_time_end:
-                hour, minute = map(int, data.profile.preferred_time_end.split(":"))
-                preferred_time_end = datetime.time(hour, minute)
-            
-            # Create UserUpdate object
-            user_update = UserUpdate(
-                full_name=data.profile.full_name,
-                bio=data.profile.bio,
-                interests=data.profile.interests,
-                location_lat=data.profile.location_lat,
-                location_lon=data.profile.location_lon,
-                radius=data.profile.radius,
-                preferred_language=data.profile.preferred_language,
-                photo_url=data.profile.photo_url,
-                preferred_days=data.profile.preferred_days,
-                preferred_time_start=preferred_time_start,
-                preferred_time_end=preferred_time_end,
-                timezone=data.profile.timezone
-            )
-            
-            # Get user by Telegram ID from init data
-            # In a real app, you would extract the user ID from the validated Telegram data
-            # For simplicity, we'll assume the user ID is provided in the request
-            user_id = data.profile.user_id if hasattr(data.profile, "user_id") else None
-            
-            if not user_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="User ID not provided"
-                )
-            
-            # Update user
-            success = await UserRepository.update_user(user_id, user_update)
-            
-            if not success:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Failed to update user"
-                )
-            
-            return {"status": "success", "message": "Profile updated successfully"}
+    # try:
+    if data.action == "update_profile" and data.profile:
+        # Convert time strings to time objects if provided
+        preferred_time_start = None
+        preferred_time_end = None
         
-        elif data.action == "feedback" and data.feedback:
-            # Process feedback
-            # In a real app, you would validate the match ID and user ID
-            # For simplicity, we'll assume they are valid
-            
-            # Update match with feedback
-            from app.database.models import MatchUpdate
-            
-            match_update = MatchUpdate(
-                feedback_user1=data.feedback.text
-            )
-            
-            success = await MatchRepository.update_match(data.feedback.match_id, match_update)
-            
-            if not success:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Failed to save feedback"
-                )
-            
-            return {"status": "success", "message": "Feedback saved successfully"}
+        if data.profile.preferred_time_start:
+            hour, minute = map(int, data.profile.preferred_time_start.split(":"))
+            preferred_time_start = datetime.time(hour, minute)
         
-        else:
+        if data.profile.preferred_time_end:
+            hour, minute = map(int, data.profile.preferred_time_end.split(":"))
+            preferred_time_end = datetime.time(hour, minute)
+        
+        # Create UserUpdate object
+        user_update = UserUpdate(
+            full_name=data.profile.full_name,
+            bio=data.profile.bio,
+            interests=data.profile.interests,
+            location_lat=data.profile.location_lat,
+            location_lon=data.profile.location_lon,
+            radius=data.profile.radius,
+            preferred_language=data.profile.preferred_language,
+            photo_url=data.profile.photo_url,
+            preferred_days=data.profile.preferred_days,
+            preferred_time_start=preferred_time_start,
+            preferred_time_end=preferred_time_end,
+            timezone=data.profile.timezone
+        )
+        
+        # Get user by Telegram ID from init data
+        # In a real app, you would extract the user ID from the validated Telegram data
+        # For simplicity, we'll assume the user ID is provided in the request
+        user_id = data.profile.user_id if hasattr(data.profile, "user_id") else None
+        
+        if not user_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid action or missing data"
+                detail="User ID not provided"
             )
+        
+        # Update user
+        success = await UserRepository.update_user(user_id, user_update)
+        
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update user"
+            )
+        
+        return {"status": "success", "message": "Profile updated successfully"}
     
-    except Exception as e:
-        logger.error(f"Error processing Web App data: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error processing data: {str(e)}"
+    elif data.action == "feedback" and data.feedback:
+        # Process feedback
+        # In a real app, you would validate the match ID and user ID
+        # For simplicity, we'll assume they are valid
+        
+        # Update match with feedback
+        from app.database.models import MatchUpdate
+        
+        match_update = MatchUpdate(
+            feedback_user1=data.feedback.text
         )
+        
+        success = await MatchRepository.update_match(data.feedback.match_id, match_update)
+        
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to save feedback"
+            )
+        
+        return {"status": "success", "message": "Feedback saved successfully"}
+    
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid action or missing data"
+        )
+    
+    # except Exception as e:
+    #     logger.error(f"Error processing Web App data: {e}")
+    #     raise HTTPException(
+    #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #         detail=f"Error processing data: {str(e)}"
+    #     )
 
 # Add these imports at the top of the file
 import hmac
