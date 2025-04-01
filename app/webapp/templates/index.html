@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Random Coffee - Home{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="mb-3">Random Coffee</h1>
+    <p class="lead">Connect with interesting people for coffee chats!</p>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Welcome to Random Coffee!</h5>
+        <p class="card-text">
+            This app helps you connect with other people for coffee chats based on your interests, location, and preferences.
+        </p>
+        <p class="card-text">
+            To get started, please complete your profile by clicking the button below.
+        </p>
+        <div class="d-grid gap-2">
+            <button id="editProfileBtn" class="btn btn-primary">
+                <i class="bi bi-person-fill"></i> Complete Your Profile
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        How It Works
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-3 text-primary">
+                <i class="bi bi-1-circle-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Complete Your Profile</h5>
+                <p class="mb-0 hint-text">Tell us about yourself, your interests, and preferences.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-3 text-primary">
+                <i class="bi bi-2-circle-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Get Matched</h5>
+                <p class="mb-0 hint-text">We'll match you with someone who shares your interests.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-3 text-primary">
+                <i class="bi bi-3-circle-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Meet for Coffee</h5>
+                <p class="mb-0 hint-text">Connect with your match and arrange a coffee chat.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="me-3 fs-3 text-primary">
+                <i class="bi bi-4-circle-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Share Feedback</h5>
+                <p class="mb-0 hint-text">Let us know how it went to improve future matches.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        Features
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-4 text-primary">
+                <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Location-Based Matching</h5>
+                <p class="mb-0 hint-text">Find people nearby for convenient meetups.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-4 text-primary">
+                <i class="bi bi-tags-fill"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Interest-Based Matching</h5>
+                <p class="mb-0 hint-text">Connect with people who share your interests.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-3 fs-4 text-primary">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Scheduling</h5>
+                <p class="mb-0 hint-text">Set your preferred days and times for meetings.</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="me-3 fs-4 text-primary">
+                <i class="bi bi-translate"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Language Preferences</h5>
+                <p class="mb-0 hint-text">Match with people who speak your preferred language.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tg = window.Telegram.WebApp;
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        
+        // Get user data from Telegram WebApp
+        const user = tg.initDataUnsafe?.user || {};
+        
+        // Check if user exists in our database
+        fetch(`/api/user/${user.id}`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 404) {
+                    // User not found, they need to create a profile
+                    editProfileBtn.textContent = 'Create Your Profile';
+                    return null;
+                } else {
+                    throw new Error('Error fetching user data');
+                }
+            })
+            .then(userData => {
+                if (userData) {
+                    // User exists, they can edit their profile
+                    editProfileBtn.textContent = 'Edit Your Profile';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        
+        // Handle edit profile button click
+        editProfileBtn.addEventListener('click', function() {
+            window.location.href = '/profile/edit';
+        });
+    });
+</script>
+{% endblock %}

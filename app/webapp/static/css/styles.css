@@ -1,0 +1,155 @@
+/* Custom styles for Random Coffee Mini App */
+
+/* Main container */
+.container {
+    padding-bottom: 60px;
+}
+
+/* Cards */
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Interest tags */
+.interest-tag {
+    display: inline-block;
+    background-color: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+    border-radius: 16px;
+    padding: 4px 12px;
+    margin: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.interest-tag:hover {
+    transform: scale(1.05);
+}
+
+/* Profile avatar */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--tg-theme-button-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: var(--tg-theme-button-color);
+    border-color: var(--tg-theme-button-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--tg-theme-button-color);
+    border-color: var(--tg-theme-button-color);
+    filter: brightness(1.1);
+}
+
+/* Form controls */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--tg-theme-button-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb), 0.25);
+}
+
+/* Feature icons */
+.feature-icon {
+    font-size: 2rem;
+    color: var(--tg-theme-button-color);
+    margin-bottom: 1rem;
+}
+
+/* Steps */
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+/* Loading spinner */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .avatar {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+        --tg-theme-bg-color: #222;
+        --tg-theme-text-color: #fff;
+        --tg-theme-hint-color: #aaa;
+        --tg-theme-link-color: #5aafed;
+        --tg-theme-button-color: #50a8eb;
+        --tg-theme-button-text-color: #fff;
+        --tg-theme-secondary-bg-color: #333;
+    }
+}
