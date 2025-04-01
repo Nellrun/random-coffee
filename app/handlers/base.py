@@ -154,7 +154,7 @@ async def cmd_profile(message: Message):
     # Create inline keyboard for editing profile
     from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
     
-    keyboard = InlineKeyboardMarkup(row_width=1)
+    keyboard = None
     webapp_url = os.getenv("WEBAPP_URL")
     
     if webapp_url:
@@ -162,7 +162,9 @@ async def cmd_profile(message: Message):
             text="Edit Profile",
             web_app=WebAppInfo(url=f"{webapp_url}/profile/edit")
         )
-        keyboard.add(edit_btn)
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[edit_btn]]  # one button per row
+        )
     
     await message.answer(profile_text, reply_markup=keyboard)
 
