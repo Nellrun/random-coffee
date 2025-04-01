@@ -71,7 +71,7 @@ class UserRepository:
         set_clause += ", updated_at = $1"
         
         # Build the query
-        query = f"UPDATE users SET {set_clause} WHERE id = ${len(update_data) + 2} RETURNING id"
+        query = f"UPDATE users SET {set_clause} WHERE telegram_id = ${len(update_data) + 2} RETURNING id"
         
         # Build the parameters
         params = [datetime.now()] + list(update_data.values()) + [user_id]

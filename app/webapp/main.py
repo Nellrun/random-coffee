@@ -50,6 +50,7 @@ class TelegramInitData(BaseModel):
 class ProfileData(BaseModel):
     """Model for profile data"""
     full_name: str
+    user_id: int
     bio: Optional[str] = None
     interests: List[str] = []
     location_lat: Optional[float] = None
@@ -183,6 +184,7 @@ async def get_user_profile(user_id: int):
 @app.post("/api/webapp/data")
 async def process_webapp_data(data: WebAppResponse):
     """Process data from the Web App"""
+    logger.info(f"request body: {data}")
     # try:
     if data.action == "update_profile" and data.profile:
         # Convert time strings to time objects if provided
@@ -228,6 +230,7 @@ async def process_webapp_data(data: WebAppResponse):
         success = await UserRepository.update_user(user_id, user_update)
         
         if not success:
+            logger.info("Failed to update user profile, probably not found in db")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to update user"
