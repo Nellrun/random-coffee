@@ -150,10 +150,9 @@
     body:not([data-theme="light"]) {
         background-color: #121212;
         color: #e0e0e0;
-        /* Фон для ссылок и элементов по умолчанию */
     }
     
-    /* Переменные темы */
+    /* Theme variables */
     body:not([data-theme="light"]) {
         --tg-theme-bg-color: #121212;
         --tg-theme-text-color: #e0e0e0;
@@ -164,14 +163,14 @@
         --tg-theme-secondary-bg-color: #1d1d1d;
     }
     
-    /* Карточки и формы в темном режиме */
+    /* Cards and form controls in dark mode */
     .card, .form-control, .form-select {
         background-color: var(--tg-theme-secondary-bg-color);
         color: var(--tg-theme-text-color);
         border: 1px solid #2e2e2e;
     }
     
-    /* Кнопки в темном режиме */
+    /* Buttons in dark mode */
     .btn-primary {
         background-color: var(--tg-theme-button-color);
         border-color: var(--tg-theme-button-color);
@@ -181,6 +180,9 @@
         filter: brightness(1.1);
     }
     
-    /* Обновлённые стили для интерес-тегов и аватаров остаются без изменений,
-       поскольку они уже используют переменные темы */
+    /* Улучшаем вид плейсхолдера для элементов с классом form-control */
+    .form-control::placeholder {
+        color: #b3b3b3 !important;
+        opacity: 1 !important;
+    }
 }
