@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI, Request, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -146,14 +147,14 @@ async def profile_view(request: Request, user_id: int):
 async def get_user(telegram_id: int):
     """Get user data by Telegram ID"""
     user = await UserRepository.get_user_by_telegram_id(telegram_id)
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
     
-    return JSONResponse(content=user)
+    return JSONResponse(content=jsonable_encoder(user))
 
 @app.get("/api/user/profile/{user_id}", response_class=JSONResponse)
 async def get_user_profile(user_id: int):
