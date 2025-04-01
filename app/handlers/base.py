@@ -204,8 +204,6 @@ async def cmd_matches(message: Message):
         
         # Create message based on status
         if match['status'] == 'pending':
-            keyboard = InlineKeyboardMarkup(row_width=2)
-            
             # Add view profile button
             if webapp_url:
                 view_profile = InlineKeyboardButton(
@@ -217,7 +215,10 @@ async def cmd_matches(message: Message):
             # Add accept/decline buttons
             accept = InlineKeyboardButton(text="Accept ✅", callback_data=f"match_accept_{match['id']}")
             decline = InlineKeyboardButton(text="Decline ❌", callback_data=f"match_decline_{match['id']}")
-            keyboard.add(accept, decline)
+
+            keyboard = InlineKeyboardMarkup(
+                inline_keyboard=[[view_profile], [accept, decline]]
+            )
             
             message_text = (
                 f"🔄 <b>Pending Match</b>\n\n"
@@ -230,7 +231,7 @@ async def cmd_matches(message: Message):
             await message.answer(message_text, reply_markup=keyboard)
             
         elif match['status'] == 'accepted':
-            keyboard = InlineKeyboardMarkup(row_width=1)
+            keyboard = None
             
             # Add view profile button
             if webapp_url:
@@ -238,7 +239,9 @@ async def cmd_matches(message: Message):
                     text="View Profile",
                     web_app=WebAppInfo(url=f"{webapp_url}/profile/{other_user['id']}?match_id={match['id']}&status=accepted")
                 )
-                keyboard.add(view_profile)
+                keyboard = InlineKeyboardMarkup(
+                    inline_keyboard=[[view_profile]]
+                )
             
             # Add contact button
             contact_btn = InlineKeyboardButton(
@@ -265,7 +268,7 @@ async def cmd_matches(message: Message):
             await message.answer(message_text, reply_markup=keyboard)
             
         elif match['status'] == 'completed':
-            keyboard = InlineKeyboardMarkup(row_width=1)
+            keyboard = None
             
             # Add view profile button
             if webapp_url:
@@ -273,7 +276,9 @@ async def cmd_matches(message: Message):
                     text="View Profile",
                     web_app=WebAppInfo(url=f"{webapp_url}/profile/{other_user['id']}?match_id={match['id']}&status=completed")
                 )
-                keyboard.add(view_profile)
+                keyboard = InlineKeyboardMarkup(
+                    inline_keyboard=[[view_profile]]
+                )
             
             # Add feedback button if not already provided
             if (match['user1_id'] == user['id'] and not match['feedback_user1']) or \
@@ -379,8 +384,6 @@ async def cmd_settings(message: Message):
     # Create inline keyboard
     from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
     
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    
     # Toggle active status
     status_text = "Pause Matching" if user['is_active'] else "Resume Matching"
     status_data = f"settings_status_{'pause' if user['is_active'] else 'resume'}"
@@ -393,9 +396,10 @@ async def cmd_settings(message: Message):
             text="Edit Profile",
             web_app=WebAppInfo(url=f"{webapp_url}/profile/edit")
         )
-        keyboard.add(edit_btn)
-    
-    keyboard.add(status_btn)
+
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[edit_btn], [status_btn]]
+    )
     
     # Create message
     settings_text = (

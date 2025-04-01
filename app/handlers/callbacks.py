@@ -48,8 +48,6 @@ async def on_match_accept(callback: CallbackQuery, bot: Bot):
         
         from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
         
-        keyboard = InlineKeyboardMarkup(row_width=1)
-        
         # Add contact button
         contact_btn = InlineKeyboardButton(
             text=f"Contact {other_user['full_name']}", 
@@ -61,8 +59,10 @@ async def on_match_accept(callback: CallbackQuery, bot: Bot):
             text="Mark as Completed", 
             callback_data=f"match_complete_{match_id}"
         )
-        
-        keyboard.add(contact_btn, complete_btn)
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[contact_btn, complete_btn]]
+        )
         
         message_text = (
             f"✅ <b>Match Accepted!</b>\n\n"
@@ -156,12 +156,14 @@ async def on_match_complete(callback: CallbackQuery, bot: Bot):
         # Update the message
         from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
         
-        keyboard = InlineKeyboardMarkup(row_width=1)
         feedback_btn = InlineKeyboardButton(
             text="Leave Feedback", 
             callback_data=f"feedback_{match_id}"
         )
-        keyboard.add(feedback_btn)
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[feedback_btn]]
+        )
         
         message_text = (
             f"✅ <b>Match Completed!</b>\n\n"
@@ -264,8 +266,6 @@ async def on_status_toggle(callback: CallbackQuery):
         # Update the message
         from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
         
-        keyboard = InlineKeyboardMarkup(row_width=1)
-        
         # Toggle active status
         new_status_text = "Resume Matching" if action == "pause" else "Pause Matching"
         new_status_data = f"settings_status_{'resume' if action == 'pause' else 'pause'}"
@@ -273,8 +273,10 @@ async def on_status_toggle(callback: CallbackQuery):
         
         # Edit profile button
         edit_btn = InlineKeyboardButton(text="Edit Profile", web_app={"url": f"{os.getenv('WEBAPP_URL')}/profile/edit"})
-        
-        keyboard.add(status_btn, edit_btn)
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[status_btn, edit_btn]]
+        )
         
         # Create message
         settings_text = (
