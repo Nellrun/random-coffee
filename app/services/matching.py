@@ -1,3 +1,4 @@
+import asyncio
 import random
 from typing import List, Dict, Any, Tuple, Set
 from datetime import datetime
@@ -6,6 +7,18 @@ from loguru import logger
 
 from app.database.repositories import UserRepository, MatchRepository
 from app.database.models import MatchCreate
+
+
+async def select_candidate(available_candidates):
+    # Получаем список предыдущих матчей для каждого кандидата
+    matches_list = await asyncio.gather(
+        *[MatchRepository.get_previous_matches(candidate['id']) for candidate in available_candidates]
+    )
+    # Сопоставляем кандидатов с количеством их предыдущих матчей
+    candidate_with_counts = zip(available_candidates, matches_list)
+    # Выбираем кандидата с минимальным количеством предыдущих матчей
+    candidate = min(candidate_with_counts, key=lambda item: len(item[1]))[0]
+    return candidate
 
 
 class MatchingService:
@@ -135,8 +148,9 @@ class MatchingService:
                 continue
             
             # Select candidate with minimum previous matches
-            candidate = min(available_candidates, 
-                           key=lambda c: len(MatchRepository.get_previous_matches(c['id'])))
+            candidate = await select_candidate(available_candidates)
+            # candidate = min(available_candidates, 
+            #                key=lambda c: len(MatchRepository.get_previous_matches(c['id'])))
             
             # Create match
             matches.append((user['id'], candidate['id']))

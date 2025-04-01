@@ -46,10 +46,7 @@ class NotificationService:
             return False
     
     async def _send_match_notification(self, user: Dict[str, Any], match_partner: Dict[str, Any], match_id: int):
-        """Send match notification to a user"""
-        # Create inline keyboard
-        keyboard = InlineKeyboardMarkup(row_width=2)
-        
+        """Send match notification to a user"""        
         # Add view profile button
         profile_url = f"{self.webapp_url}/profile/{match_partner['id']}"
         view_profile = InlineKeyboardButton(text="View Profile", web_app={"url": profile_url})
@@ -57,9 +54,10 @@ class NotificationService:
         # Add accept/decline buttons
         accept = InlineKeyboardButton(text="Accept ✅", callback_data=f"match_accept_{match_id}")
         decline = InlineKeyboardButton(text="Decline ❌", callback_data=f"match_decline_{match_id}")
-        
-        keyboard.add(view_profile)
-        keyboard.add(accept, decline)
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[view_profile], [accept, decline]]  # one button per row
+        )
         
         # Create message text
         message = (
@@ -118,12 +116,13 @@ class NotificationService:
                 
             elif status == "completed":
                 # Send completion notification to both users
-                keyboard = InlineKeyboardMarkup()
                 feedback_btn = InlineKeyboardButton(
                     text="Leave Feedback", 
                     callback_data=f"feedback_{match_id}"
                 )
-                keyboard.add(feedback_btn)
+                keyboard = InlineKeyboardMarkup(
+                    inline_keyboard=[[feedback_btn]]  # one button per row
+                )
                 
                 message = (
                     f"✅ <b>Coffee Match Completed!</b>\n\n"
@@ -160,8 +159,6 @@ class NotificationService:
     
     async def _send_acceptance_notification(self, user: Dict[str, Any], acceptor: Dict[str, Any], match_id: int):
         """Send notification that match was accepted"""
-        keyboard = InlineKeyboardMarkup(row_width=1)
-        
         # Add contact button
         contact_btn = InlineKeyboardButton(
             text=f"Contact {acceptor['full_name']}", 
@@ -173,8 +170,10 @@ class NotificationService:
             text="Mark as Completed", 
             callback_data=f"match_complete_{match_id}"
         )
-        
-        keyboard.add(contact_btn, complete_btn)
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[contact_btn, complete_btn]]  # one button per row
+        )
         
         message = (
             f"🎉 <b>Match Accepted!</b>\n\n"
@@ -218,9 +217,6 @@ class NotificationService:
             if not user1 or not user2:
                 return False
             
-            # Create keyboard
-            keyboard = InlineKeyboardMarkup(row_width=2)
-            
             # Add view profile button
             profile_url = f"{self.webapp_url}/profile/{user2['id']}"
             view_profile = InlineKeyboardButton(text="View Profile", web_app={"url": profile_url})
@@ -229,8 +225,9 @@ class NotificationService:
             accept = InlineKeyboardButton(text="Accept ✅", callback_data=f"match_accept_{match_id}")
             decline = InlineKeyboardButton(text="Decline ❌", callback_data=f"match_decline_{match_id}")
             
-            keyboard.add(view_profile)
-            keyboard.add(accept, decline)
+            keyboard = InlineKeyboardMarkup(
+                inline_keyboard=[[view_profile], [accept, decline]]  # one button per row
+            )
             
             # Send reminder to user1
             message = (
@@ -249,10 +246,10 @@ class NotificationService:
             # Send reminder to user2
             profile_url = f"{self.webapp_url}/profile/{user1['id']}"
             view_profile = InlineKeyboardButton(text="View Profile", web_app={"url": profile_url})
-            
-            keyboard = InlineKeyboardMarkup(row_width=2)
-            keyboard.add(view_profile)
-            keyboard.add(accept, decline)
+
+            keyboard = InlineKeyboardMarkup(
+                inline_keyboard=[[view_profile], [accept, decline]]  # one button per row
+            )
             
             message = (
                 f"⏰ <b>Reminder: Pending Coffee Match</b>\n\n"

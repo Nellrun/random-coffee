@@ -74,6 +74,8 @@ class Scheduler:
                 await asyncio.sleep(0.5)
             
             logger.info(f"Matching process completed. Created {len(match_ids)} matches.")
+
+            await self.send_match_reminders()
         
         except Exception as e:
             logger.error(f"Error in matching process: {e}")
