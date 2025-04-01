@@ -13,12 +13,12 @@ class UserBase(BaseModel):
     location_lat: Optional[float] = None
     location_lon: Optional[float] = None
     radius: int = 10
-    preferred_language: str = "en"
+    preferred_language: str = "ru"
     photo_url: Optional[str] = None
     preferred_days: List[str] = []
     preferred_time_start: Optional[time] = None
     preferred_time_end: Optional[time] = None
-    timezone: str = "UTC"
+    timezone: str = "Europe/Paris"
 
 
 class UserCreate(UserBase):
