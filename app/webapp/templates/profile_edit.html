@@ -405,8 +405,9 @@
                 preferredDays.push(checkbox.value);
             });
             
-            // Create profile data object
+            // Создаём объект profileData, как и раньше
             const profileData = {
+                user_id: user.id, // добавляем ID пользователя из Telegram
                 full_name: document.getElementById('fullName').value,
                 bio: document.getElementById('bio').value,
                 interests: interests,
@@ -420,18 +421,37 @@
                 preferred_time_end: document.getElementById('preferredTimeEnd').value || null,
                 timezone: document.getElementById('timezone').value
             };
-            
-            // Create data to send back to Telegram
+
+            // Формируем данные для отправки с указанием действия
             const webAppData = {
                 action: 'update_profile',
                 profile: profileData
             };
-            
-            // Send data back to Telegram
-            tg.sendData(JSON.stringify(webAppData));
-            
-            // Show success modal
-            successModal.show();
+
+            // Отправляем данные на бекенд
+            fetch("/api/webapp/data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(webAppData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Error while updating profile");
+                }
+            })
+            .then(data => {
+                console.log("Ответ от сервера:", data);
+                // Показываем модальное окно об успешном обновлении
+                successModal.show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
         });
         
         // Handle cancel button click
