@@ -48,7 +48,7 @@ class NotificationService:
     async def _send_match_notification(self, user: Dict[str, Any], match_partner: Dict[str, Any], match_id: int):
         """Send match notification to a user"""        
         # Add view profile button
-        profile_url = f"{self.webapp_url}/profile/{match_partner['id']}"
+        profile_url = f"{self.webapp_url}/profile/{match_partner['id']}?status=pending"
         view_profile = InlineKeyboardButton(text="View Profile", web_app={"url": profile_url})
         
         # Add accept/decline buttons
